@@ -18,6 +18,6 @@ Route::resource('/admin/volunteer', volunteerController::class);
 Route::resource('/admin/donation', donationController::class);
 Route::resource('/admin/testimonial', testimonialController::class);
 
-Route::resource('/user/volunteer', volunteerControllerAPI::class);
-Route::resource('/user/donation', donationControllerAPI::class);
-Route::resource('/user/testimonial', testimonialControllerAPI::class);
+Route::resource('api/user/volunteer', volunteerControllerAPI::class);
+Route::resource('api/user/donation', donationControllerAPI::class);
+Route::resource('api/user/testimonial', testimonialControllerAPI::class);
