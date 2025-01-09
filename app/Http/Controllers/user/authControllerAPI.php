@@ -10,6 +10,24 @@ use Illuminate\Support\Str;
 
 class authControllerAPI extends Controller
 {
+    public function alluser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string',
+            'password' => 'nullable|string|max:255',
+        ]);
+
+        $validated['role'] = 'user';
+
+        $donation = User::create($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Account user created successfully',
+        ], 201);
+    }
+
     public function signup(Request $request)
     {
         $validated = $request->validate([

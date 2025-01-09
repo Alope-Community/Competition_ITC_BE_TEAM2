@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Donation;
 
 class donationController extends Controller
@@ -36,7 +38,8 @@ class donationController extends Controller
             'category' => 'required|string',
             'donation_url' => 'nullable|string|max:15',
             'web_url' => 'nullable|string|max:255',
-            'image_url' => 'nullable|url',
+            'registration_url' => 'nullable|string|max:255',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
 
@@ -83,8 +86,10 @@ class donationController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category' => 'required|string',
-            'donation_url' => 'nullable|string|max:15',
+            'donation_url' => 'nullable|string|max:225',
             'web_url' => 'nullable|string|max:255',
+            'registration_url' => 'nullable|string|max:255',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
@@ -113,7 +118,7 @@ class donationController extends Controller
      */
     public function destroy(string $id)
     {
-        $program = Volunteer::findOrFail($id);
+        $program = Donation::findOrFail($id);
     
         if ($program->image_url && Storage::exists('public/' . $program->image_url)) {
             Storage::delete('public/' . $program->image_url);

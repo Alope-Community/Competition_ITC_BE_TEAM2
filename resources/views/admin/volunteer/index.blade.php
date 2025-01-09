@@ -30,21 +30,22 @@
             <th class="px-4 py-2 border">Kategori</th>
             <th class="px-4 py-2 border">Kontak</th>
             <th class="px-4 py-2 border">Instagram</th>
-            <th class="px-4 py-2 border">Status</th>
+            <th class="px-4 py-2 border">Registrasi</th>
             <th class="px-4 py-2 border">Gambar</th>
+            <th class="px-4 py-2 border">Status</th>
             <th class="px-4 py-2 border">Aksi</th>
           </tr>
         </thead>
         <tbody class="text-gray-600">
           @forelse($volunteers as $volunteer)
             <tr class="hover:bg-gray-50">
-              <td class="border px-4 py-2 text-center text-green-500">{{ $loop->iteration }}</td>
+              <td class="border px-4 py-2 text-center text-black-500">{{ $loop->iteration }}</td>
               <td class="border px-4 py-2">{{ $volunteer->title }}</td>
               <td class="border px-4 py-2">{{ Str::limit($volunteer->description, 50) }}</td>
               <td class="border px-4 py-2">{{ ucfirst($volunteer->category) }}</td>
               <td class="border px-4 py-2">{{ $volunteer->contact_phone }}</td>
               <td class="border px-4 py-2">{{ $volunteer->contact_instagram }}</td>
-              <td class="border px-4 py-2">{{ ucfirst($volunteer->status) }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->registration_url }}</td>
               <td class="border px-4 py-2">
                 @if($volunteer->image_url)
                   <img src="{{ asset('storage/' . $volunteer->image_url) }}" alt="{{ $volunteer->title }}" class="w-16 h-16 object-cover rounded">
@@ -52,6 +53,7 @@
                   <span class="text-gray-500">Tidak ada gambar</span>
                 @endif
               </td>
+              <td class="border px-4 py-2">{{ ucfirst($volunteer->status) }}</td>
               <td class="border px-4 py-2">
                 <div class="flex space-x-2">
                   <a href="{{ route('volunteer.edit', $volunteer->id) }}" 

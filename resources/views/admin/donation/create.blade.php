@@ -24,13 +24,13 @@
   <div class="card max-w-4xl mx-auto">
     <div class="card-header flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Form Tambah Program Donasi</h2>
-      <a href="{{ route('volunteer.index') }}" 
+      <a href="{{ route('donation.index') }}" 
          class="bg-gray-500 text-white px-4 py-2 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
          Kembali
       </a>
     </div>
 
-    <form action="{{ route('donation.store') }}" method="POST" class="space-y-4">
+    <form action="{{ route('donation.store') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
       @csrf
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Title -->
@@ -85,6 +85,28 @@
                  class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
                  placeholder="Masukkan Link Website" value="{{ old('web_url') }}">
           @error('web_url')
+            <div class="text-red-500 text-sm">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <!-- Registrasi -->
+        <div class="col-span-2">
+          <label for="registration_url" class="mx-3 block text-sm font-medium text-gray-700">Link Registration</label>
+          <input type="text" id="registration_url" name="registration_url" 
+                 class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                 placeholder="Masukkan Link Registrasi" value="{{ old('registration_url') }}">
+          @error('registration_url')
+            <div class="text-red-500 text-sm">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <!-- Image Upload -->
+        <div class="col-span-2">
+          <label for="image_url" class="mx-3 block text-sm font-medium text-gray-700">Upload Gambar</label>
+          <input type="file" id="image_url" name="image_url" 
+                 class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          <small class="ml-3 text-gray-500">Unggah file gambar dengan format .jpeg, .jpg, atau .png (maksimal 2MB).</small>
+          @error('image_url')
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
         </div>

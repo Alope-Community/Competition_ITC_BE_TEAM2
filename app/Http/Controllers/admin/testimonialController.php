@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Testimonial;
 
 class testimonialController extends Controller
@@ -34,9 +36,17 @@ class testimonialController extends Controller
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
             'content' => 'required|string',
-            'photo_url' => '-',
-            'created_at' => now()
+            'photo_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        if ($request->hasFile('photo_url')) {
+            $extension = $request->file('photo_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('photo_url')->storeAs('img/testimonial', $imageName, 'public');
+            $validated['photo_url'] = $imagePath;
+        } else {
+            $validated['photo_url'] = 'img/testimonial/testimonial-default.png';
+        }
 
         try {
             Testimonial::create($validated);
@@ -72,18 +82,25 @@ class testimonialController extends Controller
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
             'content' => 'required|string',
-            'photo_url' => 'nullable|url',
+            'photo_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $testimonial = Testimonial::findOrFail($id);
 
-        $testimonial->update([
-            'name' => $validated['name'],
-            'position' => $validated['position'],
-            'content' => $validated['content'],
-            'photo_url' => '-',
-            'updated_at' => now()
-        ]);
+        if ($request->hasFile('photo_url')) {
+            if ($testimonial->photo_url && Storage::exists('public/storage/' . $testimonial->photo_url)) {
+                Storage::delete('public/storage/' . $testimonial->photo_url);
+            }
+    
+            $extension = $request->file('photo_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('photo_url')->storeAs('img/testimonial', $imageName, 'public');
+            $validated['photo_url'] = $imagePath;
+        } else {
+            $validated['photo_url'] = $testimonial->photo_url;
+        }
+    
+        $testimonial->update($validated);
 
         return redirect()->route('testimonial.index')->with('success', 'Testimoni berhasil diperbarui!');
     }
@@ -95,6 +112,9 @@ class testimonialController extends Controller
     {
         $program = Testimonial::findOrFail($id);
 
+        if ($program->photo_url && Storage::exists('public/' . $program->photo_url)) {
+            Storage::delete('public/' . $program->photo_url);
+        }
         $program->delete();
 
         return redirect()->route('testimonial.index')->with('success', 'Testimoni deleted successfully');

@@ -19,7 +19,7 @@
            + Tambah Data
         </a>
       </div>
-
+      <div class="w-full overflow-x-auto">
       <table class="table-auto w-full text-left border-collapse border border-gray-200">
         <thead>
           <tr class="bg-gray-200">
@@ -29,6 +29,8 @@
             <th class="px-4 py-2 border">Kategori</th>
             <th class="px-4 py-2 border">Donasi</th>
             <th class="px-4 py-2 border">Website</th>
+            <th class="px-4 py-2 border">Registrasi</th>
+            <th class="px-4 py-2 border">Gambar</th>
             <th class="px-4 py-2 border">Status</th>
             <th class="px-4 py-2 border">Aksi</th>
           </tr>
@@ -36,12 +38,20 @@
         <tbody class="text-gray-600">
           @forelse($donations as $donation)
             <tr class="hover:bg-gray-50">
-              <td class="border px-4 py-2 text-center text-green-500">{{ $loop->iteration }}</td>
+              <td class="border px-4 py-2 text-center text-black-500">{{ $loop->iteration }}</td>
               <td class="border px-4 py-2">{{ $donation->title }}</td>
               <td class="border px-4 py-2">{{ Str::limit($donation->description, 50) }}</td>
               <td class="border px-4 py-2">{{ ucfirst($donation->category) }}</td>
               <td class="border px-4 py-2">{{ $donation->donation_url }}</td>
               <td class="border px-4 py-2">{{ $donation->web_url }}</td>
+              <td class="border px-4 py-2">{{ $donation->registration_url }}</td>
+              <td class="border px-4 py-2">
+                @if($donation->image_url)
+                  <img src="{{ asset('storage/' . $donation->image_url) }}" alt="{{ $donation->title }}" class="w-16 h-16 object-cover rounded">
+                @else
+                  <span class="text-gray-500">Tidak ada gambar</span>
+                @endif
+              </td>
               <td class="border px-4 py-2">{{ ucfirst($donation->status) }}</td>
               <td class="border px-4 py-2">
                 <div class="flex space-x-2">
@@ -68,6 +78,7 @@
           @endforelse
         </tbody>
       </table>
+    </div>
     </div>
     <!-- End Recent Sales -->
   </div>

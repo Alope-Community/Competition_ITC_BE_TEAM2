@@ -12,6 +12,7 @@ class Volunteer extends Model
         'category', 
         'contact_phone', 
         'contact_instagram', 
+        'registration_url', 
         'image_url', 
         'status',
     ];

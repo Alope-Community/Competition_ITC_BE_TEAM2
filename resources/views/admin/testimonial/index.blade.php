@@ -20,6 +20,7 @@
         </a>
       </div>
 
+      <div class="w-full overflow-x-auto">
       <table class="table-auto w-full text-left border-collapse border border-gray-200">
         <thead>
           <tr class="bg-gray-200">
@@ -40,9 +41,9 @@
               <td class="border px-4 py-2">{{ Str::limit($testimonial->content, 50) }}</td>
               <td class="border px-4 py-2">
                 @if($testimonial->photo_url)
-                  <img src="{{ $testimonial->photo_url }}" alt="Foto {{ $testimonial->name }}" class="w-12 h-12 rounded-full">
+                  <img src="{{ asset('storage/' . $testimonial->photo_url) }}" alt="{{ $testimonial->title }}" class="w-16 h-16 object-cover rounded">
                 @else
-                  <span class="text-gray-500">Tidak ada foto</span>
+                  <span class="text-gray-500">Tidak ada gambar</span>
                 @endif
               </td>
               <td class="border px-4 py-2">
@@ -70,6 +71,7 @@
           @endforelse
         </tbody>
       </table>
+    </div>
     </div>
     <!-- End Testimonials List -->
   </div>

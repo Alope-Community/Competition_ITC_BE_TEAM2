@@ -80,11 +80,22 @@
 
         <!-- Instagram -->
         <div class="col-span-2">
-          <label for="contact_instagram" class="mx-3 block text-sm font-medium text-gray-700">Instagram</label>
+          <label for="contact_instagram" class="mx-3 block text-sm font-medium text-gray-700">Akun Instagram</label>
           <input type="text" id="contact_instagram" name="contact_instagram" 
                  class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
                  placeholder="Masukkan akun Instagram" value="{{ old('contact_instagram') }}">
           @error('contact_instagram')
+            <div class="text-red-500 text-sm">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <!-- Registrasi -->
+        <div class="col-span-2">
+          <label for="registration_url" class="mx-3 block text-sm font-medium text-gray-700">Link Registration</label>
+          <input type="text" id="registration_url" name="registration_url" 
+                 class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                 placeholder="Masukkan Link Registrasi" value="{{ old('registration_url') }}">
+          @error('registration_url')
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
         </div>

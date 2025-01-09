@@ -38,9 +38,11 @@ class volunteerController extends Controller
             'category' => 'required|string',
             'contact_phone' => 'nullable|string|max:15',
             'contact_instagram' => 'nullable|string|max:255',
+            'registration_url' => 'nullable|string|max:255',
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
+
     
         if ($request->hasFile('image_url')) {
             $extension = $request->file('image_url')->getClientOriginalExtension();
@@ -90,6 +92,7 @@ class volunteerController extends Controller
             'category' => 'required|string',
             'contact_phone' => 'nullable|string|max:15',
             'contact_instagram' => 'nullable|string|max:255',
+            'registration_url' => 'nullable|string|max:255',
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
