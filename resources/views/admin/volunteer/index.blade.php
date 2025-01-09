@@ -20,6 +20,7 @@
         </a>
       </div>
 
+      <div class="w-full overflow-x-auto">
       <table class="table-auto w-full text-left border-collapse border border-gray-200">
         <thead>
           <tr class="bg-gray-200">
@@ -30,6 +31,7 @@
             <th class="px-4 py-2 border">Kontak</th>
             <th class="px-4 py-2 border">Instagram</th>
             <th class="px-4 py-2 border">Status</th>
+            <th class="px-4 py-2 border">Gambar</th>
             <th class="px-4 py-2 border">Aksi</th>
           </tr>
         </thead>
@@ -43,6 +45,13 @@
               <td class="border px-4 py-2">{{ $volunteer->contact_phone }}</td>
               <td class="border px-4 py-2">{{ $volunteer->contact_instagram }}</td>
               <td class="border px-4 py-2">{{ ucfirst($volunteer->status) }}</td>
+              <td class="border px-4 py-2">
+                @if($volunteer->image_url)
+                  <img src="{{ asset('storage/' . $volunteer->image_url) }}" alt="{{ $volunteer->title }}" class="w-16 h-16 object-cover rounded">
+                @else
+                  <span class="text-gray-500">Tidak ada gambar</span>
+                @endif
+              </td>
               <td class="border px-4 py-2">
                 <div class="flex space-x-2">
                   <a href="{{ route('volunteer.edit', $volunteer->id) }}" 
@@ -63,11 +72,12 @@
             </tr>
           @empty
             <tr>
-              <td colspan="6" class="text-center px-4 py-2">Tidak ada data relawan tersedia.</td>
+              <td colspan="9" class="text-center px-4 py-2">Tidak ada data relawan tersedia.</td>
             </tr>
           @endforelse
         </tbody>
       </table>
+      </div>
     </div>
     <!-- End Recent Sales -->
   </div>

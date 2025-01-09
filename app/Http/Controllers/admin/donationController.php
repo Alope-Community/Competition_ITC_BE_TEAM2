@@ -39,6 +39,15 @@ class donationController extends Controller
             'image_url' => 'nullable|url',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
+
+        if ($request->hasFile('image_url')) {
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
+            $validatedData['image_url'] = $imagePath;
+        } else {
+            $validatedData['image_url'] = 'img/donation/donation-default.png';
+        }
     
         try {
             Donation::create($validatedData);
@@ -79,17 +88,22 @@ class donationController extends Controller
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
-        $volunteer = Donation::findOrFail($id);
+        $donation = Donation::findOrFail($id);
 
-        $volunteer->update([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'category' => $validated['category'],
-            'donation_url' => $validated['donation_url'],
-            'web_url' => $validated['web_url'],
-            'status' => $validated['status'],
-            'updated_at' => now()
-        ]);
+        if ($request->hasFile('image_url')) {
+            if ($donation->image_url && Storage::exists('public/storage/' . $donation->image_url)) {
+                Storage::delete('public/storage/' . $donation->image_url);
+            }
+    
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
+            $validatedData['image_url'] = $imagePath;
+        } else {
+            $validatedData['image_url'] = $donation->image_url;
+        }
+
+        $donation->update($validatedData);
 
         return redirect()->route('donation.index')->with('success', 'Program berhasil diperbarui!');
     }
@@ -99,10 +113,14 @@ class donationController extends Controller
      */
     public function destroy(string $id)
     {
-        $program = Donation::findOrFail($id);
-
+        $program = Volunteer::findOrFail($id);
+    
+        if ($program->image_url && Storage::exists('public/' . $program->image_url)) {
+            Storage::delete('public/' . $program->image_url);
+        }
+    
         $program->delete();
-
+    
         return redirect()->route('donation.index')->with('success', 'Program deleted successfully');
     }
 }

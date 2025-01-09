@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Volunteer;
 
 class volunteerController extends Controller
@@ -36,9 +38,18 @@ class volunteerController extends Controller
             'category' => 'required|string',
             'contact_phone' => 'nullable|string|max:15',
             'contact_instagram' => 'nullable|string|max:255',
-            'image_url' => 'nullable|url',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
+    
+        if ($request->hasFile('image_url')) {
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/volunteer', $imageName, 'public');
+            $validatedData['image_url'] = $imagePath;
+        } else {
+            $validatedData['image_url'] = 'img/volunteer/volunteer-default.png';
+        }
     
         try {
             Volunteer::create($validatedData);
@@ -49,7 +60,6 @@ class volunteerController extends Controller
     }
     
     
-
     /**
      * Display the specified resource.
      */
@@ -70,30 +80,36 @@ class volunteerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $volunteer = Volunteer::findOrFail($id);
+    
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category' => 'required|string',
             'contact_phone' => 'nullable|string|max:15',
             'contact_instagram' => 'nullable|string|max:255',
-            'status' => 'required|in:Aktif,Tidak Aktif',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
-
-        $volunteer = Volunteer::findOrFail($id);
-
-        $volunteer->update([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'category' => $validated['category'],
-            'contact_phone' => $validated['contact_phone'],
-            'contact_instagram' => $validated['contact_instagram'],
-            'status' => $validated['status'],
-            'updated_at' => now()
-        ]);
-
-        return redirect()->route('volunteer.index')->with('success', 'Program berhasil diperbarui!');
+    
+        if ($request->hasFile('image_url')) {
+            if ($volunteer->image_url && Storage::exists('public/storage/' . $volunteer->image_url)) {
+                Storage::delete('public/storage/' . $volunteer->image_url);
+            }
+    
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/volunteer', $imageName, 'public');
+            $validatedData['image_url'] = $imagePath;
+        } else {
+            $validatedData['image_url'] = $volunteer->image_url;
+        }
+    
+        $volunteer->update($validatedData);
+    
+        return redirect()->route('volunteer.index')->with('success', 'Program relawan berhasil diperbarui.');
     }
 
     /**
@@ -102,9 +118,13 @@ class volunteerController extends Controller
     public function destroy(string $id)
     {
         $program = Volunteer::findOrFail($id);
-
+    
+        if ($program->image_url && Storage::exists('public/' . $program->image_url)) {
+            Storage::delete('public/' . $program->image_url);
+        }
+    
         $program->delete();
-
+    
         return redirect()->route('volunteer.index')->with('success', 'Program deleted successfully');
     }
 }

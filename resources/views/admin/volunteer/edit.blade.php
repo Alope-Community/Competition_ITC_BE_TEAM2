@@ -30,9 +30,9 @@
       </a>
     </div>
 
-    <form action="{{ route('volunteer.update', $volunteer->id) }}" method="POST" class="space-y-4">
+    <form action="{{ route('volunteer.update', $volunteer->id) }}" method="POST" class="space-y-4" enctype="multipart/form-data">
       @csrf
-      @method('PUT') <!-- Use PUT for updating data -->
+      @method('PUT')
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Title -->
@@ -63,7 +63,7 @@
           <input type="text" id="category" name="category" 
                  class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
                  placeholder="Masukkan kategori program" value="{{ old('category', $volunteer->category) }}" required>
-          <small class="ml-3 text-gray-500">Masukkan kategori program, pisahkan dengan koma jika lebih dari satu.</small>
+          <small class="ml-3 text-gray-500">Pisahkan dengan koma jika lebih dari satu.</small>
           @error('category')
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
@@ -89,6 +89,24 @@
           @error('contact_instagram')
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
+        </div>
+
+        <!-- Image Upload -->
+        <div class="col-span-2">
+          <label for="image_url" class="mx-3 block text-sm font-medium text-gray-700">Unggah Gambar</label>
+          <input type="file" id="image_url" name="image_url" 
+                 class="mt-1 block w-full text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          <small class="ml-3 text-gray-500">Kosongkan jika tidak ingin mengganti gambar.</small>
+          @error('image_url')
+            <div class="text-red-500 text-sm">{{ $message }}</div>
+          @enderror
+
+          @if($volunteer->image_url)
+            <div class="mt-3">
+              <p>Gambar Saat Ini:</p>
+              <img src="{{ asset('storage/' . $volunteer->image_url) }}" alt="Gambar relawan" class="w-32 h-32 object-cover rounded">
+            </div>
+          @endif
         </div>
 
         <!-- Status -->

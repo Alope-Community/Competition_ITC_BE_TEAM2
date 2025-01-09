@@ -4,6 +4,8 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Models\Donation;
 
 class donationControllerAPI extends Controller
@@ -13,7 +15,16 @@ class donationControllerAPI extends Controller
      */
     public function index()
     {
-        $donations = Donation::get();
+        $limit = request('limit');
+    
+        $query = Donation::query();
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+    
+        $donations = $query->get();
+
         $data = [
             'status' => 'success',
             'message' => 'Data donations retrieved successfully',
@@ -25,6 +36,7 @@ class donationControllerAPI extends Controller
                     'category' => $donation->category,
                     'donation_url' => $donation->donation_url,
                     'web_url' => $donation->web_url,
+                    'registration_url' => $donation->registration_url,
                     'image_url' => $donation->image_url,
                     'status' => $donation->status,
                     'created_at' => $donation->created_at->toDateString(),
@@ -53,11 +65,22 @@ class donationControllerAPI extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category' => 'nullable|string|max:255',
-            'donation_url' => 'nullable|url',
-            'web_url' => 'nullable|url',
-            'image_url' => 'nullable|url',
+            'donation_url' => 'nullable|string|max:255',
+            'web_url' => 'nullable|string|max:255',
+            'registration_url' => 'nullable|string|max:255',
+            'image_url' => 'nullable',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
+            'created_at' => now()
         ]);
+
+        if ($request->hasFile('image_url')) {
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
+            $validated['image_url'] = $imagePath;
+        } else {
+            $validated['image_url'] = 'img/donation/donation-default.png';
+        }
 
         $donation = Donation::create($validated);
 
@@ -89,6 +112,7 @@ class donationControllerAPI extends Controller
             'category' => $donation->category,
             'donation_url' => $donation->donation_url,
             'web_url' => $donation->web_url,
+            'registration_url' => $donation->registration_url,
             'image_url' => $donation->image_url,
             'status' => $donation->status,
             'created_at' => $donation->created_at->toDateString(),
@@ -128,11 +152,26 @@ class donationControllerAPI extends Controller
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
-            'donation_url' => 'nullable|url',
-            'web_url' => 'nullable|url',
-            'image_url' => 'nullable|url',
+            'donation_url' => 'nullable|string|max:255',
+            'web_url' => 'nullable|string|max:255',
+            'registration_url' => 'nullable|string|max:255',
+            'image_url' => 'nullable',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
+            'updated_at' => now()
         ]);
+
+        if ($request->hasFile('image_url')) {
+            if ($donation->image_url && Storage::exists('public/' . $donation->image_url)) {
+                Storage::delete('public/' . $donation->image_url);
+            }
+    
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
+            $validated['image_url'] = $imagePath;
+        } else {
+            $validated['image_url'] = $volunteer->image_url;
+        }
 
         $donation->update($validated);
 
@@ -155,6 +194,10 @@ class donationControllerAPI extends Controller
                 'status' => 'error',
                 'message' => 'Donation not found',
             ], 404);
+        }
+
+        if ($donation->image_url && Storage::exists('public/' . $donation->image_url)) {
+            Storage::delete('public/' . $donation->image_url);
         }
 
         $donation->delete();

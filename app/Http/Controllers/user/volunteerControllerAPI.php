@@ -4,6 +4,8 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Models\Volunteer;
 
 class volunteerControllerAPI extends Controller
@@ -13,8 +15,16 @@ class volunteerControllerAPI extends Controller
      */
     public function index()
     {
-        $volunteers = Volunteer::get();
+        $limit = request('limit');
+    
+        $query = Volunteer::query();
 
+        if ($limit) {
+            $query->limit($limit);
+        }
+    
+        $volunteers = $query->get();
+    
         $data = [
             'status' => 'success',
             'message' => 'Data volunteers retrieved successfully',
@@ -26,6 +36,7 @@ class volunteerControllerAPI extends Controller
                     'category' => $volunteer->category,
                     'contact_phone' => $volunteer->contact_phone,
                     'contact_instagram' => $volunteer->contact_instagram,
+                    'registration_url' => $volunteer->registration_url,
                     'image_url' => $volunteer->image_url,
                     'status' => $volunteer->status,
                     'created_at' => $volunteer->created_at,
@@ -33,9 +44,9 @@ class volunteerControllerAPI extends Controller
                 ];
             }),
         ];
-
+    
         return response()->json($data, 200);
-    }
+    }     
 
     /**
      * Show the form for creating a new resource.
@@ -56,9 +67,19 @@ class volunteerControllerAPI extends Controller
             'category' => 'nullable|string|max:255',
             'contact_phone' => 'nullable|string|max:20',
             'contact_instagram' => 'nullable|string|max:255',
-            'image_url' => 'nullable|url',
+            'registration_url' => 'nullable|string|max:255',
+            'image_url' => 'nullable',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
         ]);
+
+        if ($request->hasFile('image_url')) {
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/volunteer', $imageName, 'public');
+            $validated['image_url'] = $imagePath;
+        } else {
+            $validated['image_url'] = 'img/volunteer/volunteer-default.png';
+        }
 
         $volunteer = Volunteer::create($validated);
 
@@ -90,6 +111,7 @@ class volunteerControllerAPI extends Controller
             'category' => $volunteer->category,
             'contact_phone' => $volunteer->contact_phone,
             'contact_instagram' => $volunteer->contact_instagram,
+            'registration_url' => $volunteer->registration_url,
             'image_url' => $volunteer->image_url,
             'status' => $volunteer->status,
             'created_at' => $volunteer->created_at->toDateString(),
@@ -117,24 +139,38 @@ class volunteerControllerAPI extends Controller
     public function update(Request $request, string $id)
     {
         $volunteer = Volunteer::find($id);
-
+        
         if (!$volunteer) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Volunteer not found',
             ], 404);
         }
-
+    
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
             'contact_phone' => 'nullable|string|max:20',
             'contact_instagram' => 'nullable|string|max:255',
-            'image_url' => 'nullable|url',
+            'registration_url' => 'nullable|string|max:255',
+            'image_url' => 'nullable|file|image|max:2048',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
         ]);
-
+    
+        if ($request->hasFile('image_url')) {
+            if ($volunteer->image_url && Storage::exists('public/' . $volunteer->image_url)) {
+                Storage::delete('public/' . $volunteer->image_url);
+            }
+    
+            $extension = $request->file('image_url')->getClientOriginalExtension();
+            $imageName = Str::random(20) . '.' . $extension;
+            $imagePath = $request->file('image_url')->storeAs('img/volunteer', $imageName, 'public');
+            $validated['image_url'] = $imagePath;
+        } else {
+            $validated['image_url'] = $volunteer->image_url;
+        }
+    
         $volunteer->update($validated);
 
         return response()->json([
@@ -157,7 +193,11 @@ class volunteerControllerAPI extends Controller
                 'message' => 'Volunteer not found',
             ], 404);
         }
-
+    
+        if ($volunteer->image_url && Storage::exists('public/' . $volunteer->image_url)) {
+            Storage::delete('public/' . $volunteer->image_url);
+        }
+    
         $volunteer->delete();
 
         return response()->json([
