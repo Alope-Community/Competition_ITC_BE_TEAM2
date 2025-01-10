@@ -15,20 +15,12 @@ class testimonialControllerAPI extends Controller
      */
     public function index()
     {
-        $limit = request('limit');
+        $testimonials = Testimonial::paginate(3);
     
-        $query = Testimonial::query();
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-    
-        $testimonials = $query->get();
-
         $data = [
             'status' => 'success',
             'message' => 'Data testimonials retrieved successfully',
-            'data' => $testimonials->map(function ($testimonial) {
+            'data' => $testimonials->getCollection()->map(function ($testimonial) {
                 return [
                     'id' => $testimonial->id,
                     'name' => $testimonial->name,
@@ -39,10 +31,19 @@ class testimonialControllerAPI extends Controller
                     'updated_at' => $testimonial->updated_at->toDateString(),
                 ];
             }),
+            'pagination' => [
+                'current_page' => $testimonials->currentPage(),
+                'last_page' => $testimonials->lastPage(),
+                'per_page' => $testimonials->perPage(),
+                'total' => $testimonials->total(),
+                'next_page_url' => $testimonials->nextPageUrl(),
+                'prev_page_url' => $testimonials->previousPageUrl(),
+            ],
         ];
-
+    
         return response()->json($data, 200);
     }
+    
 
     /**
      * Show the form for creating a new resource.

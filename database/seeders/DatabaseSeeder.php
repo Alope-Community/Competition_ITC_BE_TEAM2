@@ -18,7 +18,18 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => 'admin123',
+            'Role' => 'admin',
+
         ]);
+        User::factory()->create([
+            'name' => 'Jonathan',
+            'email' => 'jonathan@example.com',
+            'password' => 'jonat123',
+            'Role' => 'yayasan/organisasi/komunitas',
+
+        ]);
+
         $this->call([
             VolunteerSeeder::class,
             DonationSeeder::class,

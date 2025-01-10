@@ -12,14 +12,14 @@
     <p class="uppercase text-xs text-gray-600 mb-4 tracking-wider">homes</p>
 
     <!-- link -->
-    <a href="./index.html" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+    <a href="{{ route('userManagement.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
       <i class="fad fa-chart-pie text-xs mr-2"></i>
       User Management
     </a>
     <!-- end link -->
 
     <!-- link -->
-    <a href="./index.html" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+    <a href="{{ route('communityManagement.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
       <i class="fad fa-swatchbook text-xs mr-2"></i>
       Communities Management
     </a>

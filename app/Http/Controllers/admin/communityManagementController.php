@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class communityManagementController extends Controller
 {
@@ -12,7 +13,9 @@ class communityManagementController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::where('role', 'yayasan/organisasi/komunitas')->get();
+        return view('admin.communityManagement.index', compact('users'));
+
     }
 
     /**
@@ -20,7 +23,7 @@ class communityManagementController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.communityManagement.create');
     }
 
     /**
@@ -28,7 +31,21 @@ class communityManagementController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'password' => 'required|string',
+            'role' => 'required|in:admin,yayasan/organisasi/komunitas,user',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('communityManagement.index')->with('success', 'Komunitas berhasil ditambahkan.');
     }
 
     /**
@@ -44,7 +61,8 @@ class communityManagementController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return view('admin.communityManagement.edit', compact('user'));
     }
 
     /**
@@ -52,7 +70,24 @@ class communityManagementController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'required|in:admin,yayasan/organisasi/komunitas,user',
+        ]);
+    
+        $user = User::findOrFail($id);
+    
+        $user->update([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => $validatedData['password'] ? Hash::make($validatedData['password']) : $user->password,
+            'role' => $validatedData['role'],
+        ]);
+    
+        return redirect()->route('communityManagement.index')->with('success', 'Komunitas berhasil diperbarui.');
+
     }
 
     /**
@@ -60,6 +95,10 @@ class communityManagementController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+    
+        $user->delete();
+    
+        return redirect()->route('communityManagement.index')->with('success', 'Komunitas berhasil dihapus.');
     }
 }
