@@ -24,6 +24,13 @@ class User extends Authenticatable
         'role'
     ];
 
+    public function Donation(){
+        return $this->belongsToMany(Donation::class, 'donation_user', 'user_id', 'donation_id');
+    }
+    public function Volunteer(){
+        return $this->belongsToMany(Volunteer::class, 'volunteer_user', 'user_id', 'volunteer_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

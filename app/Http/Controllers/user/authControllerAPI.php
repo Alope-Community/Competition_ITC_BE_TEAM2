@@ -21,7 +21,10 @@ class authControllerAPI extends Controller
             ], 401);
         }
 
-        $user = User::where('remember_token', $token)->first();
+        $user = User::where('remember_token', $token)
+        ->with('volunteer')
+        ->with('donation')
+        ->first();
 
         if (!$user) {
             return response()->json([
@@ -33,14 +36,7 @@ class authControllerAPI extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User data retrieved successfully',
-            'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'created_at' => $user->created_at->toDateTimeString(),
-                'updated_at' => $user->updated_at->toDateTimeString(),
-            ],
+            'data' => $user,
         ], 200);
     }
 
@@ -68,6 +64,7 @@ class authControllerAPI extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string|max:255',
         ]);
+
 
         $user = User::where('email', $credentials['email'])->first();
 

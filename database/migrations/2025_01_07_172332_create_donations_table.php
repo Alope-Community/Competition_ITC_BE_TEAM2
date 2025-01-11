@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('donation_url')->nullable();
             $table->string('web_url')->nullable();
             $table->string('registration_url')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('image_url')->nullable();
             $table->string('status')->default('Aktif');
             $table->timestamps();

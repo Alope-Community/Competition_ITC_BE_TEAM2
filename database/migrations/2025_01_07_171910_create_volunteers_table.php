@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('contact_phone')->nullable();
             $table->string('contact_instagram')->nullable();
             $table->string('registration_url')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('image_url')->nullable();
             $table->string('status')->default('Aktif');
             $table->timestamps();

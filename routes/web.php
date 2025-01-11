@@ -26,11 +26,15 @@ Route::resource('/admin/volunteer', volunteerController::class)->middleware('aut
 Route::resource('/admin/donation', donationController::class)->middleware('auth');
 Route::resource('/admin/testimonial', testimonialController::class)->middleware('auth');
 
-Route::post('api/user/auth/signup', [authControllerAPI::class, 'signup'])->name('user.signup');
-Route::post('api/user/auth/signin', [authControllerAPI::class, 'signin'])->name('user.signin');
+Route::get('api/user/auth/signup', [authControllerAPI::class, 'signup'])->name('user.signup');
+Route::get('api/user/auth/signin', [authControllerAPI::class, 'signin'])->name('user.signin');
+
 Route::resource('api/user/volunteerAPI', volunteerControllerAPI::class);
+Route::post('api/user/volunteerAPI/register', [volunteerControllerAPI::class, 'volunteerRegister'])->name('volunteer.register');
 Route::resource('api/user/donationAPI', donationControllerAPI::class);
+Route::post('api/user/donationAPI/register', [donationControllerAPI::class, 'donationRegister'])->name('donation.register');
 Route::resource('api/user/testimonialAPI', testimonialControllerAPI::class);
+
 Route::get('api/user/profile', [authControllerAPI::class, 'getuser'])->name('user.profile');
 Route::get('api/user/auth/signout', [authControllerAPI::class, 'signout'])->name('user.signout');
 Route::get('api/user/program/searchAPI', [programControllerAPI::class, 'search'])->name('search.program');

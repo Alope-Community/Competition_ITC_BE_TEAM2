@@ -13,6 +13,8 @@ class Donation extends Model
         'donation_url',
         'web_url',
         'registration_url',
+        'start_date',
+        'end_date',
         'image_url',
         'status',
     ];

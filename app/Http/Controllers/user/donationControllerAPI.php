@@ -7,9 +7,46 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\Donation;
+use App\Models\User;
 
 class donationControllerAPI extends Controller
 {
+    public function donationRegister(Request $request)
+    {
+        $token = $request->bearerToken();
+    
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token is required',
+            ], 401);
+        }
+
+        $user = User::where('remember_token', $token)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid token',
+            ], 401);
+        }
+
+        $request->validate([
+            'donation_id' => 'required|exists:donations,id',
+        ]);
+
+        $userId = $user->id;
+        $donationId = $request->input('donation_id');
+    
+        $user->donation()->attach($donationId);
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Donation registered successfully',
+        ]);
+    }
+    
+    
     /**
      * Display a listing of the resource.
      */
@@ -37,6 +74,8 @@ class donationControllerAPI extends Controller
                     'donation_url' => $donation->donation_url,
                     'web_url' => $donation->web_url,
                     'registration_url' => $donation->registration_url,
+                    'start_date' => $donation->start_date,
+                    'end_date' => $donation->end_date,
                     'image_url' => $donation->image_url,
                     'status' => $donation->status,
                     'created_at' => $donation->created_at->toDateString(),
@@ -68,6 +107,8 @@ class donationControllerAPI extends Controller
             'donation_url' => 'nullable|string|max:255',
             'web_url' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
             'created_at' => now()
@@ -113,6 +154,8 @@ class donationControllerAPI extends Controller
             'donation_url' => $donation->donation_url,
             'web_url' => $donation->web_url,
             'registration_url' => $donation->registration_url,
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => $donation->image_url,
             'status' => $donation->status,
             'created_at' => $donation->created_at->toDateString(),
@@ -155,6 +198,8 @@ class donationControllerAPI extends Controller
             'donation_url' => 'nullable|string|max:255',
             'web_url' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
             'updated_at' => now()

@@ -7,9 +7,45 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\Volunteer;
+use App\Models\User;
 
 class volunteerControllerAPI extends Controller
 {
+    public function volunteerRegister(Request $request)
+    {
+        $token = $request->bearerToken();
+    
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token is required',
+            ], 401);
+        }
+
+        $user = User::where('remember_token', $token)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid token',
+            ], 401);
+        }
+
+        $request->validate([
+            'volunteer_id' => 'required|exists:volunteers,id',
+        ]);
+
+        $userId = $user->id;
+        $volunteerId = $request->input('volunteer_id');
+    
+        $user->volunteer()->attach($volunteerId);
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Volunteer registered successfully',
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -37,6 +73,8 @@ class volunteerControllerAPI extends Controller
                     'contact_phone' => $volunteer->contact_phone,
                     'contact_instagram' => $volunteer->contact_instagram,
                     'registration_url' => $volunteer->registration_url,
+                    'start_date' => $donation->start_date,
+                    'end_date' => $donation->end_date,
                     'image_url' => $volunteer->image_url,
                     'status' => $volunteer->status,
                     'created_at' => $volunteer->created_at,
@@ -68,6 +106,8 @@ class volunteerControllerAPI extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'contact_instagram' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
         ]);
@@ -112,6 +152,8 @@ class volunteerControllerAPI extends Controller
             'contact_phone' => $volunteer->contact_phone,
             'contact_instagram' => $volunteer->contact_instagram,
             'registration_url' => $volunteer->registration_url,
+            'start_date' => $donation->start_date,
+            'end_date' => $donation->end_date,
             'image_url' => $volunteer->image_url,
             'status' => $volunteer->status,
             'created_at' => $volunteer->created_at->toDateString(),
@@ -154,6 +196,8 @@ class volunteerControllerAPI extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'contact_instagram' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable|file|image|max:2048',
             'status' => 'nullable|string|in:Aktif,Non-Aktif',
         ]);
