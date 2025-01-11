@@ -11,10 +11,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->validateCsrfTokens(except: [
+        $middleware->alias([
+            'auth.api' => \App\Http\Middleware\AuthApi::class,
             '/*' // <-- exclude this route
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+    // ->withMiddleware(function (Middleware $middleware) {
+    //     $middleware->validateCsrfTokens(except: [
+    //         '/*' // <-- exclude this route
+    //     ]);
+    // })

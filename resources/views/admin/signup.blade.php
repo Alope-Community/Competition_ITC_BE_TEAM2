@@ -17,7 +17,8 @@
             </div>
             <div class="flex flex-col gap-5">
                 <hr class="text-taskia-background-grey">
-                <form class="flex flex-col gap-[30px]" id="userForm">
+                <form class="flex flex-col gap-[30px]" id="userForm" action="register">
+                    @csrf
                     <div>
                         <label for="name" class="font-semibold">Nama Lengkap</label>
                         <div
@@ -58,8 +59,8 @@
                         class="flex gap-[10px] justify-center items-center text-white p-[12px_16px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey">
                         Sign Up</button>
                         <hr>
-                    <a href="{{ route('auth.index') }}" class="flex gap-[10px] justify-center items-center text-indigo-950 p-[12px_16px] h-12 font-semibold rounded-full w-full border border-taskia-background-grey">
-                        Login</a>
+                    <a href="/login" class="flex gap-[10px] justify-center items-center text-indigo-950 p-[12px_16px] h-12 font-semibold rounded-full w-full border border-taskia-background-grey">
+                        Sign In</a>
                 </form>
             </div>
         </div>

@@ -17,7 +17,8 @@
             </div>
             <div class="flex flex-col gap-5">
                 <hr class="text-taskia-background-grey">
-                <form class="flex flex-col gap-[30px]" id="userForm">
+                <form method="post" class="flex flex-col gap-[30px]" id="userForm" action="login">
+                    @csrf
                     <div>
                         <label for="email" class="font-semibold">email</label>
                         <div
@@ -42,16 +43,11 @@
                                 placeholder="Type your password" id="password" name="password" required>
                         </div>
                     </div>
-                    <label for="remember" class="flex gap-[6px] w-fit">
-                        <input type="checkbox" name="remember" id="remember"
-                            class="flex shrink-0 w-[22px] h-[22px] appearance-none checked:border-4 checked:border-solid checked:border-white rounded-full checked:bg-[#6F4FFF] ring-1 ring-taskia-background-grey">
-                        Remember me
-                    </label>
                     <button type="submit"
                         class="flex gap-[10px] justify-center items-center text-white p-[12px_16px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey">Sign
                         In</button>
                         <hr>
-                        <a href="{{ route('auth.create') }}"
+                        <a href="/register"
                             class="flex gap-[10px] justify-center items-center text-indigo-950 p-[12px_16px] h-12 font-semibold rounded-full w-full border border-taskia-background-grey">Create
                             New Account</a>
                 </form>

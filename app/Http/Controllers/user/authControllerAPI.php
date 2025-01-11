@@ -12,7 +12,36 @@ class authControllerAPI extends Controller
 {
     public function getuser(Request $request)
     {
-        //
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token is required',
+            ], 401);
+        }
+
+        $user = User::where('remember_token', $token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid token',
+            ], 401);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User data retrieved successfully',
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'created_at' => $user->created_at->toDateTimeString(),
+                'updated_at' => $user->updated_at->toDateTimeString(),
+            ],
+        ], 200);
     }
 
     public function signup(Request $request)
@@ -62,10 +91,16 @@ class authControllerAPI extends Controller
 
     public function signout(Request $request)
     {
-        dd($request);
-        $api_token = $request['remember_token'];
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token is required',
+            ], 401);
+        }
         
-        $user = User::where('remember_token', $api_token)->first();
+        $user = User::where('remember_token', $token)->first();
 
         if ($user) {
             $user->remember_token = null;
