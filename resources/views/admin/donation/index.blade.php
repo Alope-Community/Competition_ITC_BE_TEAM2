@@ -30,6 +30,8 @@
             <th class="px-4 py-2 border">Donasi</th>
             <th class="px-4 py-2 border">Website</th>
             <th class="px-4 py-2 border">Registrasi</th>
+            <th class="px-4 py-2 border">Mulai</th>
+            <th class="px-4 py-2 border">Berakhir</th>
             <th class="px-4 py-2 border">Gambar</th>
             <th class="px-4 py-2 border">Status</th>
             <th class="px-4 py-2 border">Aksi</th>
@@ -45,6 +47,8 @@
               <td class="border px-4 py-2">{{ $donation->donation_url }}</td>
               <td class="border px-4 py-2">{{ $donation->web_url }}</td>
               <td class="border px-4 py-2">{{ $donation->registration_url }}</td>
+              <td class="border px-4 py-2">{{ $donation->start_date }}</td>
+              <td class="border px-4 py-2">{{ $donation->end_date }}</td>
               <td class="border px-4 py-2">
                 @if($donation->image_url)
                   <img src="{{ asset('storage/' . $donation->image_url) }}" alt="{{ $donation->title }}" class="w-16 h-16 object-cover rounded">

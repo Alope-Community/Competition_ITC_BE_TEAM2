@@ -39,6 +39,8 @@ class donationController extends Controller
             'donation_url' => 'nullable|string|max:15',
             'web_url' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
@@ -89,6 +91,8 @@ class donationController extends Controller
             'donation_url' => 'nullable|string|max:225',
             'web_url' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);

@@ -39,6 +39,8 @@ class volunteerController extends Controller
             'contact_phone' => 'nullable|string|max:15',
             'contact_instagram' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
@@ -65,9 +67,10 @@ class volunteerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $volunteer = Volunteer::with('user')->findOrFail($id);
+        return view('admin.volunteer.show', compact('volunteer'));
     }
 
     /**
@@ -93,6 +96,8 @@ class volunteerController extends Controller
             'contact_phone' => 'nullable|string|max:15',
             'contact_instagram' => 'nullable|string|max:255',
             'registration_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);

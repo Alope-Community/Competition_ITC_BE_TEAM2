@@ -18,4 +18,8 @@ class Donation extends Model
         'image_url',
         'status',
     ];
+    public function User()
+    {
+        return $this->belongsToMany(User::class, 'donation_user', 'donation_id', 'user_id')->withTimestamps();
+    }
 }

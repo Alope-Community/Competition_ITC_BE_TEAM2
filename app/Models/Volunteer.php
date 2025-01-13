@@ -18,4 +18,8 @@ class Volunteer extends Model
         'image_url', 
         'status',
     ];
+    public function User()
+    {
+        return $this->belongsToMany(User::class, 'volunteer_user', 'volunteer_id', 'user_id')->withTimestamps();
+    }
 }

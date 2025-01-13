@@ -38,7 +38,9 @@ class donationControllerAPI extends Controller
         $userId = $user->id;
         $donationId = $request->input('donation_id');
     
-        $user->donation()->attach($donationId);
+        $user->volunteer()->attach($donationId, [
+            'created_at' => now(),
+        ]);
     
         return response()->json([
             'status' => 'success',

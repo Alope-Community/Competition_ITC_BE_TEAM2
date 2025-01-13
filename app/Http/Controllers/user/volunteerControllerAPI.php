@@ -38,7 +38,9 @@ class volunteerControllerAPI extends Controller
         $userId = $user->id;
         $volunteerId = $request->input('volunteer_id');
     
-        $user->volunteer()->attach($volunteerId);
+        $user->volunteer()->attach($volunteerId, [
+            'created_at' => now(),
+        ]);
     
         return response()->json([
             'status' => 'success',
@@ -73,8 +75,8 @@ class volunteerControllerAPI extends Controller
                     'contact_phone' => $volunteer->contact_phone,
                     'contact_instagram' => $volunteer->contact_instagram,
                     'registration_url' => $volunteer->registration_url,
-                    'start_date' => $donation->start_date,
-                    'end_date' => $donation->end_date,
+                    'start_date' => $volunteer->start_date,
+                    'end_date' => $volunteer->end_date,
                     'image_url' => $volunteer->image_url,
                     'status' => $volunteer->status,
                     'created_at' => $volunteer->created_at,
@@ -152,8 +154,8 @@ class volunteerControllerAPI extends Controller
             'contact_phone' => $volunteer->contact_phone,
             'contact_instagram' => $volunteer->contact_instagram,
             'registration_url' => $volunteer->registration_url,
-            'start_date' => $donation->start_date,
-            'end_date' => $donation->end_date,
+            'start_date' => $volunteer->start_date,
+            'end_date' => $volunteer->end_date,
             'image_url' => $volunteer->image_url,
             'status' => $volunteer->status,
             'created_at' => $volunteer->created_at->toDateString(),

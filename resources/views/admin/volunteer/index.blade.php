@@ -31,6 +31,8 @@
             <th class="px-4 py-2 border">Kontak</th>
             <th class="px-4 py-2 border">Instagram</th>
             <th class="px-4 py-2 border">Registrasi</th>
+            <th class="px-4 py-2 border">Mulai</th>
+            <th class="px-4 py-2 border">Berakhir</th>
             <th class="px-4 py-2 border">Gambar</th>
             <th class="px-4 py-2 border">Status</th>
             <th class="px-4 py-2 border">Aksi</th>
@@ -46,6 +48,8 @@
               <td class="border px-4 py-2">{{ $volunteer->contact_phone }}</td>
               <td class="border px-4 py-2">{{ $volunteer->contact_instagram }}</td>
               <td class="border px-4 py-2">{{ $volunteer->registration_url }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->start_date }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->end_date }}</td>
               <td class="border px-4 py-2">
                 @if($volunteer->image_url)
                   <img src="{{ asset('storage/' . $volunteer->image_url) }}" alt="{{ $volunteer->title }}" class="w-16 h-16 object-cover rounded">
@@ -60,6 +64,10 @@
                      class="bg-yellow-500 text-white px-3 py-1 rounded shadow hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-300">
                      Edit
                   </a>
+                  <a href="{{ route('volunteer.show', $volunteer->id) }}" 
+                    class="bg-gray-500 text-white px-3 py-1 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
+                    Detail
+                 </a>
                   <form action="{{ route('volunteer.destroy', $volunteer->id) }}" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
