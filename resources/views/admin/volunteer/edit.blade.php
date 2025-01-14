@@ -24,7 +24,7 @@
   <div class="card max-w-4xl mx-auto">
     <div class="card-header flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Form Edit Program Relawan</h2>
-      <a href="{{ route('volunteer.index') }}" 
+      <a href="{{ route('.index') }}" 
          class="bg-gray-500 text-white px-4 py-2 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
          Kembali
       </a>
@@ -45,7 +45,23 @@
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
         </div>
-
+        <!-- Pembuat (Dropdown User) -->
+        <div class="col-span-2">
+          <label for="user_id" class="mx-3 block text-sm font-medium text-gray-700">Pembuat</label>
+          <select id="user_id" name="user_id" 
+                  class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+            <option value="">Pilih Pembuat</option>
+            @foreach($users as $user)
+              <option value="{{ $user->id }}" 
+                      {{ old('user_id', $volunteer->user_id) == $user->id ? 'selected' : '' }}>
+                {{ $user->name }}
+              </option>
+            @endforeach
+          </select>
+          @error('user_id')
+            <div class="text-red-500 text-sm">{{ $message }}</div>
+          @enderror
+        </div>
         <!-- Description -->
         <div class="col-span-2">
           <label for="description" class="mx-3 block text-sm font-medium text-gray-700">Deskripsi</label>
@@ -108,7 +124,7 @@
             <label for="start_date" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
             <input type="date" id="start_date" name="start_date" 
               class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
-              value="{{ old('start_date', $donation->start_date) }}" required>
+              value="{{ old('start_date', $volunteer->start_date) }}" required>
             @error('start_date')
               <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
             @enderror
@@ -119,7 +135,7 @@
             <label for="end_date" class="block text-sm font-medium text-gray-700">Tanggal Berakhir</label>
             <input type="date" id="end_date" name="end_date" 
               class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
-              value="{{ old('end_date', $donation->end_date) }}" required>
+              value="{{ old('end_date', $volunteer->end_date) }}" required>
             @error('end_date')
               <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
             @enderror

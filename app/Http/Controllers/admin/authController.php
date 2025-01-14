@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 
 class authController extends Controller
 {
@@ -40,7 +41,7 @@ class authController extends Controller
 
         User::create($validated);
 
-        return redirect('/login')->with('success', 'Account created successfully. Please login.');
+        return redirect()->route('login.index')->with('success', 'Account created successfully. Please login.');
     }
 
     public function authenticate(Request $request): RedirectResponse
@@ -49,17 +50,28 @@ class authController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
- 
+    
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
- 
-            return redirect()->route('userManagement.index');
+            $user = Auth::user(); // Ambil data pengguna yang sedang login
+    
+            // Periksa apakah pengguna memiliki peran yang diizinkan
+            if (in_array($user->role, ['admin', 'yayasan/organisasi/komunitas'])) {
+                $request->session()->regenerate(); // Regenerate session untuk keamanan
+                return redirect()->route('userManagement.index')->with('success', 'Login successful.');
+            }
+    
+            // Jika peran tidak sesuai, logout dan tampilkan pesan kesalahan
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Your role is not authorized to login.',
+            ])->onlyInput('email');
         }
- 
+    
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
+    
 
     /**
      * Remove the specified resource from storage.

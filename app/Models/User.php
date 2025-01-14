@@ -24,6 +24,16 @@ class User extends Authenticatable
         'role'
     ];
 
+    public function Volunteers()
+    {
+        return $this->hasMany(Volunteer::class);
+    }
+
+    public function Donations()
+    {
+        return $this->hasMany(Donation::class);
+    }
+
     public function Donation(){
         return $this->belongsToMany(Donation::class, 'donation_user', 'user_id', 'donation_id')->withTimestamps();
     }

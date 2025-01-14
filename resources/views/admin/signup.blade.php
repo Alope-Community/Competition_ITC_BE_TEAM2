@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ asset('css/output.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
 </head>
@@ -13,11 +14,33 @@
     <div class="container min-h-screen mx-auto flex justify-center items-center">
         <div id="LoginForm" class="flex flex-col bg-white rounded-[30px] gap-[30px] p-[50px] max-w-[500px] w-full">
             <div class="flex justify-center">
-                <h1 class="font-bold text-[22px] leading-[33px] mb-[3px]">CREATE ACCOUNT ADMIN</h1>
+                <h1 class="font-bold text-[22px] leading-[33px] mb-[3px]">CREATE ACCOUNT KOMUNITAS</h1>
             </div>
             <div class="flex flex-col gap-5">
                 <hr class="text-taskia-background-grey">
-                <form class="flex flex-col gap-[30px]" id="userForm" action="register">
+                <div class="flex flex-col gap-5">
+                    <hr class="text-taskia-background-grey">
+    
+                    <!-- Alert Messages -->
+                    @if(session('success'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong class="font-bold">Success!</strong>
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                    </div>
+                    @endif
+    
+                <!-- Error Messages -->
+                @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <ul class="mt-1 list-disc pl-5">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                <form method='post' class="flex flex-col gap-[30px]" id="userForm" action="register">
                     @csrf
                     <div>
                         <label for="name" class="font-semibold">Nama Lengkap</label>

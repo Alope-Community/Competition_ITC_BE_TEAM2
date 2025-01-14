@@ -24,13 +24,13 @@
   <div class="card max-w-4xl mx-auto">
     <div class="card-header flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Form Edit Program Donasi</h2>
-      <a href="{{ route('donation.index') }}" 
+      <a href="{{ route('communityDonation.index') }}" 
          class="bg-gray-500 text-white px-4 py-2 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
          Kembali
       </a>
     </div>
 
-    <form action="{{ route('donation.update', $donation->id) }}" method="POST" class="space-y-4">
+    <form action="{{ route('communityDonation.update', $donation->id) }}" method="POST" class="space-y-4">
       @csrf
       @method('PUT') <!-- Use PUT for updating data -->
 
@@ -45,23 +45,7 @@
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
         </div>
-        <!-- Pembuat (Dropdown User) -->
-        <div class="col-span-2">
-          <label for="user_id" class="mx-3 block text-sm font-medium text-gray-700">Pembuat</label>
-          <select id="user_id" name="user_id" 
-                  class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
-            <option value="">Pilih Pembuat</option>
-            @foreach($users as $user)
-              <option value="{{ $user->id }}" 
-                      {{ old('user_id', $donation->user_id) == $user->id ? 'selected' : '' }}>
-                {{ $user->name }}
-              </option>
-            @endforeach
-          </select>
-          @error('user_id')
-            <div class="text-red-500 text-sm">{{ $message }}</div>
-          @enderror
-        </div>
+
         <!-- Description -->
         <div class="col-span-2">
           <label for="description" class="mx-3 block text-sm font-medium text-gray-700">Deskripsi</label>

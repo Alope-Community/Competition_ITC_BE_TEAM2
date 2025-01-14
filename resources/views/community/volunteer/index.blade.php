@@ -13,23 +13,23 @@
     <!-- Start Recent Sales -->
     <div class="card col-span-3 xl:col-span-1">
       <div class="card-header flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold">Daftar Program Donasi</h2>
-        <a href="{{ route('donation.create') }}" 
+        <h2 class="text-lg font-semibold">Daftar Program Relawan</h2>
+        <a href="{{ route('communityVolunteer.create') }}" 
            class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
            + Tambah Data
         </a>
       </div>
+
       <div class="w-full overflow-x-auto">
       <table class="table-auto w-full text-left border-collapse border border-gray-200">
         <thead>
           <tr class="bg-gray-200">
             <th class="px-4 py-2 border">#</th>
             <th class="px-4 py-2 border">Judul</th>
-            <th class="px-4 py-2 border">Pembuat</th>
             <th class="px-4 py-2 border">Deskripsi</th>
             <th class="px-4 py-2 border">Kategori</th>
-            <th class="px-4 py-2 border">Donasi</th>
-            <th class="px-4 py-2 border">Website</th>
+            <th class="px-4 py-2 border">Kontak</th>
+            <th class="px-4 py-2 border">Instagram</th>
             <th class="px-4 py-2 border">Registrasi</th>
             <th class="px-4 py-2 border">Mulai</th>
             <th class="px-4 py-2 border">Berakhir</th>
@@ -39,37 +39,36 @@
           </tr>
         </thead>
         <tbody class="text-gray-600">
-          @forelse($donations as $donation)
+          @forelse($volunteers as $volunteer)
             <tr class="hover:bg-gray-50">
               <td class="border px-4 py-2 text-center text-black-500">{{ $loop->iteration }}</td>
-              <td class="border px-4 py-2">{{ $donation->title }}</td>
-              <td class="border px-4 py-2">{{ $donation->users->name }}</td>
-              <td class="border px-4 py-2">{{ Str::limit($donation->description, 50) }}</td>
-              <td class="border px-4 py-2">{{ ucfirst($donation->category) }}</td>
-              <td class="border px-4 py-2">{{ $donation->donation_url }}</td>
-              <td class="border px-4 py-2">{{ $donation->web_url }}</td>
-              <td class="border px-4 py-2">{{ $donation->registration_url }}</td>
-              <td class="border px-4 py-2">{{ $donation->start_date }}</td>
-              <td class="border px-4 py-2">{{ $donation->end_date }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->title }}</td>
+              <td class="border px-4 py-2">{{ Str::limit($volunteer->description, 50) }}</td>
+              <td class="border px-4 py-2">{{ ucfirst($volunteer->category) }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->contact_phone }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->contact_instagram }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->registration_url }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->start_date }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->end_date }}</td>
               <td class="border px-4 py-2">
-                @if($donation->image_url)
-                  <img src="{{ asset('storage/' . $donation->image_url) }}" alt="{{ $donation->title }}" class="w-16 h-16 object-cover rounded">
+                @if($volunteer->image_url)
+                  <img src="{{ asset('storage/' . $volunteer->image_url) }}" alt="{{ $volunteer->title }}" class="w-16 h-16 object-cover rounded">
                 @else
                   <span class="text-gray-500">Tidak ada gambar</span>
                 @endif
               </td>
-              <td class="border px-4 py-2">{{ ucfirst($donation->status) }}</td>
+              <td class="border px-4 py-2">{{ ucfirst($volunteer->status) }}</td>
               <td class="border px-4 py-2">
                 <div class="flex space-x-2">
-                  <a href="{{ route('donation.edit', $donation->id) }}" 
+                  <a href="{{ route('communityVolunteer.edit', $volunteer->id) }}" 
                      class="bg-yellow-500 text-white px-3 py-1 rounded shadow hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-300">
                      Edit
                   </a>
-                  <a href="{{ route('donation.show', $donation->id) }}" 
+                  <a href="{{ route('communityVolunteer.show', $volunteer->id) }}" 
                     class="bg-gray-500 text-white px-3 py-1 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
                     Detail
                  </a>
-                  <form action="{{ route('donation.destroy', $donation->id) }}" method="POST" class="inline">
+                  <form action="{{ route('communityVolunteer.destroy', $volunteer->id) }}" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 
@@ -83,12 +82,12 @@
             </tr>
           @empty
             <tr>
-              <td colspan="6" class="text-center px-4 py-2">Tidak ada data donasi tersedia.</td>
+              <td colspan="9" class="text-center px-4 py-2">Tidak ada data relawan tersedia.</td>
             </tr>
           @endforelse
         </tbody>
       </table>
-    </div>
+      </div>
     </div>
     <!-- End Recent Sales -->
   </div>

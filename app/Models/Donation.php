@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Donation extends Model
 {
     protected $fillable = [
+        'user_id',
         'title',
         'description',
         'category',
@@ -18,6 +19,12 @@ class Donation extends Model
         'image_url',
         'status',
     ];
+    
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function User()
     {
         return $this->belongsToMany(User::class, 'donation_user', 'donation_id', 'user_id')->withTimestamps();

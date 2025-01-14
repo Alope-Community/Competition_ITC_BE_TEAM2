@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ asset('css/output.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
 </head>
@@ -13,10 +14,32 @@
     <div class="container min-h-screen mx-auto flex justify-center items-center">
         <div id="LoginForm" class="flex flex-col bg-white rounded-[30px] gap-[30px] p-[50px] max-w-[500px] w-full">
             <div class="flex justify-center">
-                <h1 class="font-bold text-[22px] leading-[33px] mb-[3px]">LOGIN ADMIN</h1>
+                <h1 class="font-bold text-[22px] leading-[33px] mb-[3px]">LOGIN KOMUNITAS</h1>
             </div>
             <div class="flex flex-col gap-5">
                 <hr class="text-taskia-background-grey">
+
+                <!-- Alert Messages -->
+                @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong class="font-bold">Success!</strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+                @endif
+
+                <!-- Error Messages -->
+                @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <ul class="mt-1 list-disc pl-5">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                <!-- Form -->
                 <form method="post" class="flex flex-col gap-[30px]" id="userForm" action="login">
                     @csrf
                     <div>
@@ -46,15 +69,14 @@
                     <button type="submit"
                         class="flex gap-[10px] justify-center items-center text-white p-[12px_16px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey">Sign
                         In</button>
-                        <hr>
-                        <a href="/register"
-                            class="flex gap-[10px] justify-center items-center text-indigo-950 p-[12px_16px] h-12 font-semibold rounded-full w-full border border-taskia-background-grey">Create
-                            New Account</a>
+                    <hr>
+                    <a href="/register"
+                        class="flex gap-[10px] justify-center items-center text-indigo-950 p-[12px_16px] h-12 font-semibold rounded-full w-full border border-taskia-background-grey">Create
+                        New Account</a>
                 </form>
             </div>
         </div>
     </div>
-
 </body>
 
 </html>

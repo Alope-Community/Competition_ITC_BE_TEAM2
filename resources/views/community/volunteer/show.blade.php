@@ -15,7 +15,6 @@
       <!-- Informasi Detail -->
       <div>
         <p><strong>Judul:</strong> {{ $volunteer->title }}</p>
-        <p><strong>Pembuat:</strong> {{ $volunteer->users->name }}</p>
         <p><strong>Deskripsi:</strong> {{ $volunteer->description }}</p>
         <p><strong>Kategori:</strong> {{ ucfirst($volunteer->category) }}</p>
         <p><strong>Kontak:</strong> {{ $volunteer->contact_phone }}</p>

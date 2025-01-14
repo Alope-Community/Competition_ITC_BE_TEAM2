@@ -8,45 +8,66 @@
       </button>
     </div>
     <!-- end sidebar toggle -->
+    {{-- ADMIN SIDEBAR --}}
+    @if(Auth::user()->role === 'admin')
+      <p class="uppercase text-xs text-gray-600 mb-4 tracking-wider">homes</p>
 
-    <p class="uppercase text-xs text-gray-600 mb-4 tracking-wider">homes</p>
+      <!-- link -->
+      <a href="{{ route('userManagement.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-chart-pie text-xs mr-2"></i>
+        User Management
+      </a>
+      <!-- end link -->
 
-    <!-- link -->
-    <a href="{{ route('userManagement.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
-      <i class="fad fa-chart-pie text-xs mr-2"></i>
-      User Management
-    </a>
-    <!-- end link -->
+      <!-- link -->
+      <a href="{{ route('communityManagement.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-swatchbook text-xs mr-2"></i>
+        Communities Management
+      </a>
+      <!-- end link -->
+      <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Programs</p>
 
-    <!-- link -->
-    <a href="{{ route('communityManagement.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
-      <i class="fad fa-swatchbook text-xs mr-2"></i>
-      Communities Management
-    </a>
-    <!-- end link -->
+      <!-- link -->
+      <a href="{{ route('volunteer.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-comments text-xs mr-2"></i>
+        Volunteers
+      </a>
+      <!-- end link -->
 
-    <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Programs</p>
+      <!-- link -->
+      <a href="{{ route('donation.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-file-invoice-dollar text-xs mr-2"></i>
+        Donations
+      </a>
+      <!-- end link -->
 
-    <!-- link -->
-    <a href="{{ route('volunteer.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
-      <i class="fad fa-comments text-xs mr-2"></i>
-      Volunteers
-    </a>
-    <!-- end link -->
+      <!-- link -->
+      <a href="{{ route('testimonial.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-shield-check text-xs mr-2"></i>
+        Testimonials
+      </a>
+      <!-- end link -->
+    </div>
+  @endif
+  {{-- COMMUNITY SIDEBAR --}}
+  @if(Auth::user()->role === 'yayasan/organisasi/komunitas')
+        <!-- end sidebar toggle -->
+      <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Programs</p>
 
-    <!-- link -->
-    <a href="{{ route('donation.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
-      <i class="fad fa-file-invoice-dollar text-xs mr-2"></i>
-      Donations
-    </a>
-    <!-- end link -->
+      <!-- link -->
+      <a href="{{ route('communityVolunteer.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-comments text-xs mr-2"></i>
+        Volunteers
+      </a>
+      <!-- end link -->
 
-    <!-- link -->
-    <a href="{{ route('testimonial.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
-      <i class="fad fa-shield-check text-xs mr-2"></i>
-      Testimonials
-    </a>
-    <!-- end link -->
-  </div>
-  <!-- end sidebar content -->
+      <!-- link -->
+      <a href="{{ route('communityDonation.index') }}" class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
+        <i class="fad fa-file-invoice-dollar text-xs mr-2"></i>
+        Donations
+      </a>
+      <!-- end link -->
+    </div>
+    <!-- end sidebar Admin content -->
+  @endif
 </div>

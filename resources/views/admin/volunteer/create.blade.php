@@ -43,7 +43,22 @@
             <div class="text-red-500 text-sm">{{ $message }}</div>
           @enderror
         </div>
-
+        <!-- Pembuat (Dropdown User) -->
+        <div class="col-span-2">
+          <label for="user_id" class="mx-3 block text-sm font-medium text-gray-700">Pembuat</label>
+          <select id="user_id" name="user_id" 
+                  class="mt-1 block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+            <option value="">Pilih Pembuat</option>
+            @foreach($users as $user)
+              <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                {{ $user->name }}
+              </option>
+            @endforeach
+          </select>
+          @error('user_id')
+            <div class="text-red-500 text-sm">{{ $message }}</div>
+          @enderror
+        </div>
         <!-- Description -->
         <div class="col-span-2">
           <label for="description" class="mx-3 block text-sm font-medium text-gray-700">Deskripsi</label>

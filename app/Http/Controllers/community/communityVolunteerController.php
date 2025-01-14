@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\community;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Volunteer;
-use App\Models\User;
 
-class volunteerController extends Controller
+class communityVolunteerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $volunteers = Volunteer::with('users')->get();
+        $user = Auth::user();
 
-        return view('admin.volunteer.index', compact('volunteers'));
+        $volunteers = $user->volunteers;
+
+        return view('community.volunteer.index', compact('volunteers'));
     }
 
     /**
@@ -26,8 +26,7 @@ class volunteerController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        return view('admin.volunteer.create', compact('users'));
+        return view('community.volunteer.create');
     }
 
     /**
@@ -35,9 +34,8 @@ class volunteerController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
             'description' => 'required|string',
             'category' => 'required|string',
             'contact_phone' => 'nullable|string|max:15',
@@ -48,34 +46,30 @@ class volunteerController extends Controller
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
-
     
         if ($request->hasFile('image_url')) {
             $extension = $request->file('image_url')->getClientOriginalExtension();
             $imageName = Str::random(20) . '.' . $extension;
             $imagePath = $request->file('image_url')->storeAs('img/volunteer', $imageName, 'public');
-            $validatedData['image_url'] = $imagePath;
+            $validated['image_url'] = $imagePath;
         } else {
-            $validatedData['image_url'] = 'img/volunteer/volunteer-default.png';
+            $validated['image_url'] = 'img/volunteer/volunteer-default.png';
         }
     
-        try {
-            Volunteer::create($validatedData);
-            return redirect()->route('volunteer.index')->with('success', 'Program relawan berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
-        }
+        $user = Auth::user();
+        $user->volunteers()->create($validated);
+    
+        return redirect()->route('communityVolunteer.index')->with('success', 'Volunteer created successfully.');
     }
-    
-    
+
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $volunteer = Volunteer::with('user')->with('users')->findOrFail($id);
-
-        return view('admin.volunteer.show', compact('volunteer'));
+        $user = Auth::user();
+        $volunteer = $user->volunteers()->with('user')->findOrFail($id);
+        return view('community.volunteer.show', compact('volunteer'));
     }
 
     /**
@@ -83,21 +77,24 @@ class volunteerController extends Controller
      */
     public function edit(string $id)
     {
-        $volunteer = Volunteer::findOrFail($id);
-        $users = User::all();
-        return view('admin.volunteer.edit', compact('volunteer', 'users'));
+        $user = Auth::user();
+
+        $volunteer = $user->volunteers()->findOrFail($id);
+    
+        return view('community.volunteer.edit', compact('volunteer'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $volunteer = Volunteer::findOrFail($id);
-    
-        $validatedData = $request->validate([
+        $user = Auth::user();
+
+        $volunteer = $user->volunteers()->findOrFail($id);
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
             'description' => 'required|string',
             'category' => 'required|string',
             'contact_phone' => 'nullable|string|max:15',
@@ -117,14 +114,14 @@ class volunteerController extends Controller
             $extension = $request->file('image_url')->getClientOriginalExtension();
             $imageName = Str::random(20) . '.' . $extension;
             $imagePath = $request->file('image_url')->storeAs('img/volunteer', $imageName, 'public');
-            $validatedData['image_url'] = $imagePath;
+            $validated['image_url'] = $imagePath;
         } else {
-            $validatedData['image_url'] = $volunteer->image_url;
+            $validated['image_url'] = $volunteer->image_url;
         }
     
-        $volunteer->update($validatedData);
+        $volunteer->update($validated);
     
-        return redirect()->route('volunteer.index')->with('success', 'Program relawan berhasil diperbarui.');
+        return redirect()->route('communityVolunteer.index')->with('success', 'Volunteer updated successfully.');
     }
 
     /**
@@ -132,14 +129,12 @@ class volunteerController extends Controller
      */
     public function destroy(string $id)
     {
-        $program = Volunteer::findOrFail($id);
+        $user = Auth::user();
+
+        $volunteer = $user->volunteers()->findOrFail($id);
     
-        if ($program->image_url && Storage::exists('public/' . $program->image_url)) {
-            Storage::delete('public/' . $program->image_url);
-        }
+        $volunteer->delete();
     
-        $program->delete();
-    
-        return redirect()->route('volunteer.index')->with('success', 'Program deleted successfully');
+        return redirect()->route('communityVolunteer.index')->with('success', 'Volunteer deleted successfully.');
     }
 }

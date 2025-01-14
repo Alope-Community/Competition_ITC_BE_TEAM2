@@ -8,24 +8,33 @@ use App\Http\Controllers\admin\donationController;
 use App\Http\Controllers\admin\testimonialController;
 use App\Http\Controllers\admin\authController;
 
+use App\Http\Controllers\community\communityVolunteerController;
+use App\Http\Controllers\community\communityDonationController;
+
 use App\Http\Controllers\user\authControllerAPI;
 use App\Http\Controllers\user\volunteerControllerAPI;
 use App\Http\Controllers\user\donationControllerAPI;
 use App\Http\Controllers\user\testimonialControllerAPI;
 use App\Http\Controllers\user\programControllerAPI;
 
-Route::get('/login', [authController::class, 'index'])->name('login');
+Route::get('/login', [authController::class, 'index'])->name('login.index');
 Route::post('/login', [authController::class, 'authenticate'])->name('login');
 Route::get('/register', [authController::class, 'create'])->name('register');
 Route::post('/register', [authController::class, 'signup'])->name('register');
 Route::get('/logout', [authController::class, 'logout'])->name('logout');
 
+//Admin
 Route::resource('/admin/userManagement', userManagementController::class)->middleware('auth');
 Route::resource('/admin/communityManagement', communityManagementController::class)->middleware('auth');
 Route::resource('/admin/volunteer', volunteerController::class)->middleware('auth');
 Route::resource('/admin/donation', donationController::class)->middleware('auth');
 Route::resource('/admin/testimonial', testimonialController::class)->middleware('auth');
 
+//Community
+Route::resource('/community/communityVolunteer', communityVolunteerController::class)->middleware('auth');
+Route::resource('/community/communityDonation', communityDonationController::class)->middleware('auth');
+
+//API User
 Route::get('api/user/auth/signup', [authControllerAPI::class, 'signup'])->name('user.signup');
 Route::get('api/user/auth/signin', [authControllerAPI::class, 'signin'])->name('user.signin');
 

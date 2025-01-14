@@ -26,6 +26,7 @@
           <tr class="bg-gray-200">
             <th class="px-4 py-2 border">#</th>
             <th class="px-4 py-2 border">Judul</th>
+            <th class="px-4 py-2 border">Pembuat</th>
             <th class="px-4 py-2 border">Deskripsi</th>
             <th class="px-4 py-2 border">Kategori</th>
             <th class="px-4 py-2 border">Kontak</th>
@@ -43,6 +44,7 @@
             <tr class="hover:bg-gray-50">
               <td class="border px-4 py-2 text-center text-black-500">{{ $loop->iteration }}</td>
               <td class="border px-4 py-2">{{ $volunteer->title }}</td>
+              <td class="border px-4 py-2">{{ $volunteer->users->name }}</td>
               <td class="border px-4 py-2">{{ Str::limit($volunteer->description, 50) }}</td>
               <td class="border px-4 py-2">{{ ucfirst($volunteer->category) }}</td>
               <td class="border px-4 py-2">{{ $volunteer->contact_phone }}</td>

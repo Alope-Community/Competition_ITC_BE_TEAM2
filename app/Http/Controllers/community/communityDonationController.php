@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\community;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Donation;
-use App\Models\User;
 
-class donationController extends Controller
+class communityDonationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $donations = Donation::with('users')->get();
-        return view('admin.donation.index', compact('donations'));
+        $user = Auth::user();
+
+        $donations = $user->donations;
+
+        return view('community.donation.index', compact('donations'));
     }
 
     /**
@@ -25,18 +26,16 @@ class donationController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        return view('admin.donation.create', compact('users'));
+        return view('community.donation.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {   
-        $validatedData = $request->validate([
+    {
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
             'description' => 'required|string',
             'category' => 'required|string',
             'donation_url' => 'nullable|string|max:15',
@@ -47,22 +46,20 @@ class donationController extends Controller
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|string|in:Aktif,Tidak Aktif',
         ]);
-
+    
         if ($request->hasFile('image_url')) {
             $extension = $request->file('image_url')->getClientOriginalExtension();
             $imageName = Str::random(20) . '.' . $extension;
             $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
-            $validatedData['image_url'] = $imagePath;
+            $validated['image_url'] = $imagePath;
         } else {
-            $validatedData['image_url'] = 'img/donation/donation-default.png';
+            $validated['image_url'] = 'img/donation/donation-default.png';
         }
     
-        try {
-            Donation::create($validatedData);
-            return redirect()->route('donation.index')->with('success', 'Program Donasi berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
-        }
+        $user = Auth::user();
+        $user->donations()->create($validated);
+    
+        return redirect()->route('communityDonation.index')->with('success', 'Donation created successfully.');
     }
 
     /**
@@ -70,8 +67,9 @@ class donationController extends Controller
      */
     public function show(string $id)
     {
-        $donation = Donation::with('user')->with('users')->findOrFail($id);
-        return view('admin.donation.show', compact('donation'));
+        $user = Auth::user();
+        $donation = $user->donations()->with('user')->findOrFail($id);
+        return view('community.donation.show', compact('donation'));
     }
 
     /**
@@ -79,9 +77,11 @@ class donationController extends Controller
      */
     public function edit(string $id)
     {
-        $donation = Donation::findOrFail($id);
-        $users = User::all();
-        return view('admin.donation.edit', compact('donation', 'users'));
+        $user = Auth::user();
+
+        $donation = $user->donations()->findOrFail($id);
+    
+        return view('community.donation.edit', compact('donation'));
     }
 
     /**
@@ -89,9 +89,12 @@ class donationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validatedData = $request->validate([
+        $user = Auth::user();
+
+        $donation = $user->donations()->findOrFail($id);
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
             'description' => 'required|string',
             'category' => 'required|string',
             'donation_url' => 'nullable|string|max:225',
@@ -103,8 +106,6 @@ class donationController extends Controller
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
-        $donation = Donation::findOrFail($id);
-
         if ($request->hasFile('image_url')) {
             if ($donation->image_url && Storage::exists('public/storage/' . $donation->image_url)) {
                 Storage::delete('public/storage/' . $donation->image_url);
@@ -113,14 +114,14 @@ class donationController extends Controller
             $extension = $request->file('image_url')->getClientOriginalExtension();
             $imageName = Str::random(20) . '.' . $extension;
             $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
-            $validatedData['image_url'] = $imagePath;
+            $validated['image_url'] = $imagePath;
         } else {
-            $validatedData['image_url'] = $donation->image_url;
+            $validated['image_url'] = $donation->image_url;
         }
 
-        $donation->update($validatedData);
-
-        return redirect()->route('donation.index')->with('success', 'Program berhasil diperbarui!');
+        $donation->update($validated);
+    
+        return redirect()->route('communityDonation.index')->with('success', 'Donation updated successfully.');
     }
 
     /**
@@ -128,14 +129,13 @@ class donationController extends Controller
      */
     public function destroy(string $id)
     {
-        $program = Donation::findOrFail($id);
+        $user = Auth::user();
+
+        $donation = $user->donations()->findOrFail($id);
     
-        if ($program->image_url && Storage::exists('public/' . $program->image_url)) {
-            Storage::delete('public/' . $program->image_url);
-        }
+        $donation->delete();
     
-        $program->delete();
-    
-        return redirect()->route('donation.index')->with('success', 'Program deleted successfully');
+        return redirect()->route('communityDonation.index')->with('success', 'Donation deleted successfully.');
+
     }
 }
