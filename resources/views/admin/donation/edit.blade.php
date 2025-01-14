@@ -30,7 +30,7 @@
       </a>
     </div>
 
-    <form action="{{ route('donation.update', $donation->id) }}" method="POST" class="space-y-4">
+    <form action="{{ route('donation.update', $donation->id) }}" method="POST" class="space-y-4"enctype="multipart/form-data">
       @csrf
       @method('PUT') <!-- Use PUT for updating data -->
 

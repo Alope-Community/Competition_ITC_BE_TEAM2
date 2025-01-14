@@ -7,6 +7,7 @@
   <link rel="shortcut icon" href="{{ asset('img/fav.png') }}" type="image/x-icon">
   <link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v5.12.1/css/pro.min.css">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  {{-- @vite('resources/css/app.css') --}}
   <title>Pijar Nusantara</title>
 </head>
 

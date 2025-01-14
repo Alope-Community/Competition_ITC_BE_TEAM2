@@ -52,15 +52,16 @@ class authController extends Controller
         ]);
     
         if (Auth::attempt($credentials)) {
-            $user = Auth::user(); // Ambil data pengguna yang sedang login
+            $user = Auth::user();
     
-            // Periksa apakah pengguna memiliki peran yang diizinkan
-            if (in_array($user->role, ['admin', 'yayasan/organisasi/komunitas'])) {
-                $request->session()->regenerate(); // Regenerate session untuk keamanan
+            if ($user->role === 'admin') {
+                $request->session()->regenerate();
                 return redirect()->route('userManagement.index')->with('success', 'Login successful.');
+            }else if ($user->role === 'yayasan/organisasi/komunitas') {
+                $request->session()->regenerate();
+                return redirect()->route('communityVolunteer.index')->with('success', 'Login successful.');
             }
     
-            // Jika peran tidak sesuai, logout dan tampilkan pesan kesalahan
             Auth::logout();
             return back()->withErrors([
                 'email' => 'Your role is not authorized to login.',

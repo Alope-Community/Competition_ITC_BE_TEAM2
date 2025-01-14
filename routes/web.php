@@ -46,4 +46,5 @@ Route::resource('api/user/testimonialAPI', testimonialControllerAPI::class);
 
 Route::get('api/user/profile', [authControllerAPI::class, 'getuser'])->name('user.profile');
 Route::get('api/user/auth/signout', [authControllerAPI::class, 'signout'])->name('user.signout');
-Route::get('api/user/program/searchAPI', [programControllerAPI::class, 'search'])->name('search.program');
+Route::get('api/user/volunteer/searchAPI', [programControllerAPI::class, 'searchVolunteer'])->name('search.volunteer');
+Route::get('api/user/donation/searchAPI', [programControllerAPI::class, 'searchDonation'])->name('search.volunteer');

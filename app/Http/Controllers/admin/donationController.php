@@ -99,29 +99,31 @@ class donationController extends Controller
             'registration_url' => 'nullable|string|max:255',
             'start_date' => 'nullable|string|max:255',
             'end_date' => 'nullable|string|max:255',
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image_url' => 'nullable|image|max:2048', // Validate image size and type
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
-
+    
         $donation = Donation::findOrFail($id);
-
-        if ($request->hasFile('image_url')) {
-            if ($donation->image_url && Storage::exists('public/storage/' . $donation->image_url)) {
-                Storage::delete('public/storage/' . $donation->image_url);
+    
+        try {
+            // Handle image upload
+            if ($request->hasFile('image_url')) {
+                if ($donation->image_url && Storage::exists($donation->image_url)) {
+                    Storage::delete($donation->image_url); // Correctly handle paths
+                }
+    
+                $imageName = Str::random(20) . '.' . $request->file('image_url')->getClientOriginalExtension();
+                $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
+                $validatedData['image_url'] = $imagePath;
             }
     
-            $extension = $request->file('image_url')->getClientOriginalExtension();
-            $imageName = Str::random(20) . '.' . $extension;
-            $imagePath = $request->file('image_url')->storeAs('img/donation', $imageName, 'public');
-            $validatedData['image_url'] = $imagePath;
-        } else {
-            $validatedData['image_url'] = $donation->image_url;
+            $donation->update($validatedData);
+    
+            return redirect()->route('donation.index')->with('success', 'Program berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui program: ' . $e->getMessage());
         }
-
-        $donation->update($validatedData);
-
-        return redirect()->route('donation.index')->with('success', 'Program berhasil diperbarui!');
-    }
+    }    
 
     /**
      * Remove the specified resource from storage.

@@ -9,7 +9,7 @@ use App\Models\Donation;
 
 class programControllerAPI extends Controller
 {
-    public function search(Request $request)
+    public function searchVolunteer(Request $request)
     {
         $request->validate([
             'keyword' => 'required|string|max:255',
@@ -22,12 +22,7 @@ class programControllerAPI extends Controller
                                ->orWhere('category', 'LIKE', "%{$query}%")
                                ->get();
     
-        $donations = Donation::where('title', 'LIKE', "%{$query}%")
-                             ->orWhere('description', 'LIKE', "%{$query}%")
-                             ->orWhere('category', 'LIKE', "%{$query}%")
-                             ->get();
-    
-        $result = $volunteers->merge($donations);
+        $result = $volunteers;
     
         return response()->json([
             'status' => 'success',
@@ -36,4 +31,25 @@ class programControllerAPI extends Controller
         ]);
     }
     
+    public function searchDonation(Request $request)
+    {
+        $request->validate([
+            'keyword' => 'required|string|max:255',
+        ]);
+    
+        $query = $request->input('keyword');
+    
+        $donations = Donation::where('title', 'LIKE', "%{$query}%")
+                             ->orWhere('description', 'LIKE', "%{$query}%")
+                             ->orWhere('category', 'LIKE', "%{$query}%")
+                             ->get();
+    
+        $result = $donations;
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Search completed successfully',
+            'data' => $result,
+        ]);
+    }
 }

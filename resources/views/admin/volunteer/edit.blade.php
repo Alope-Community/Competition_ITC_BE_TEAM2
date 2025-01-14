@@ -24,7 +24,7 @@
   <div class="card max-w-4xl mx-auto">
     <div class="card-header flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Form Edit Program Relawan</h2>
-      <a href="{{ route('.index') }}" 
+      <a href="{{ route('volunteer.index') }}" 
          class="bg-gray-500 text-white px-4 py-2 rounded shadow hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300">
          Kembali
       </a>
